@@ -572,6 +572,21 @@ export function App() {
         await subVersion(coverSub.bytes),
       );
     }
+    let vcardSubUrl: string | undefined;
+    const vcard =
+      publishTree.showVcard !== false ? buildVcard(publishTree, url) : null;
+    if (vcard) {
+      const bytes = new TextEncoder().encode(vcard);
+      subs = {
+        ...(subs ?? {}),
+        "contact.vcf": { mime: "text/vcard; charset=utf-8", bytes },
+      };
+      vcardSubUrl = pageSubUrl(
+        path.trim(),
+        "contact.vcf",
+        await subVersion(bytes),
+      );
+    }
     const pubToSend: Public = {
       html: linkTreeToHtml(
         publishTree,
@@ -581,6 +596,7 @@ export function App() {
         bgDarkSubUrl,
         avatarSubUrl,
         coverSubUrl,
+        vcardSubUrl,
       ),
     };
     if (subs) {

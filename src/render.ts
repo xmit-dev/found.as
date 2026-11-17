@@ -160,6 +160,7 @@ export function linkTreeToHtml(
   bgDarkUrl?: string,
   avatarSubUrl?: string,
   coverSubUrl?: string,
+  vcardSubUrl?: string,
 ): string {
   const safeName = tree.displayName.trim() || "Contact";
   const safeBio = tree.bio.trim();
@@ -203,7 +204,8 @@ export function linkTreeToHtml(
 `;
   const vcard = tree.showVcard !== false ? buildVcard(tree, url) : null;
   const vcardHref = vcard
-    ? `data:text/vcard;charset=utf-8,${encodeURIComponent(vcard)}`
+    ? (vcardSubUrl ??
+      `data:text/vcard;charset=utf-8,${encodeURIComponent(vcard)}`)
     : "";
   const linkIconHtml = (link: NormalizedLink) => {
     const icon = linkIconSrc(link.item.icon);
@@ -696,7 +698,7 @@ ${btnFx}</style>
   </section>
   ${
     vcard
-      ? `<a class="vcard-button" href="${escapeHtml(vcardHref)}" download="${escapeHtml(vcardFileName(tree.displayName))}">${escapeHtml(tree.vcardLabel?.trim() || "Save contact")}</a>`
+      ? `<a class="vcard-button" href="${escapeHtml(vcardHref)}"${vcardSubUrl ? "" : ` download="${escapeHtml(vcardFileName(tree.displayName))}"`}>${escapeHtml(tree.vcardLabel?.trim() || "Save contact")}</a>`
       : ""
   }
   ${
